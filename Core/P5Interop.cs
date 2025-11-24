@@ -20,7 +20,7 @@ namespace BouncingKFLogo.Core
         {
             // Adjust the path to match where you serve p5Interop.js as a static asset.
             // If you put p5Interop.js in wwwroot/_content/YourAssemblyName/ then the import below is fine.
-            _module = await _js.InvokeAsync<IJSObjectReference>("import", "/p5Interop.js");
+            _module = await _js.InvokeAsync<IJSObjectReference>("import", "./_content/BouncingKFLogo/p5Interop.js");
         }
 
         /// <summary>
