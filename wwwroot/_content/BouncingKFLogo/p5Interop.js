@@ -60,6 +60,8 @@ export function startDVDSketch(elementId, imageUrl, width, height) {
         let brbW, brbH;  // text box size
         let brbX, brbY;  // centered position
 
+        let TurnBrbOn = false;
+
         // tint values
         p.tintR = 255;
         p.tintG = 255;
@@ -97,12 +99,15 @@ export function startDVDSketch(elementId, imageUrl, width, height) {
 
             p.noSmooth();
 
-            p.textSize(brbFontSize);
-            brbW = p.textWidth(brbText) + brbPadding * 2;
-            brbH = brbFontSize + brbPadding * 2;
+            // calculate BRB text box size and position
+            if (TurnBrbOn) {
+                p.textSize(brbFontSize);
+                brbW = p.textWidth(brbText) + brbPadding * 2;
+                brbH = brbFontSize + brbPadding * 2;
 
-            brbX = (p.width - brbW) / 2;
-            brbY = (p.height - brbH) / 2;
+                brbX = (p.width - brbW) / 2;
+                brbY = (p.height - brbH) / 2;
+            }
         };
 
 
@@ -118,19 +123,21 @@ export function startDVDSketch(elementId, imageUrl, width, height) {
                 p.tintB = (Math.sin(t + 4) * 127 + 128);
             }
 
+            if (TurnBrbOn) {
+                // DRAW BRB TEXT (centered)
+                p.fill(255);
+                p.textAlign(p.CENTER, p.CENTER);
+                p.textSize(brbFontSize);
 
-            // DRAW BRB TEXT (centered)
-            p.fill(255);
-            p.textAlign(p.CENTER, p.CENTER);
-            p.textSize(brbFontSize);
+                // optional: semi-transparent dark background box
+                p.noStroke();
+                p.fill(0, 150);
+                p.rect(brbX, brbY, brbW, brbH, 10);
 
-            // optional: semi-transparent dark background box
-            p.noStroke();
-            p.fill(0, 150);
-            p.rect(brbX, brbY, brbW, brbH, 10);
-
-            p.fill(255);
-            p.text(brbText, brbX + brbW / 2, brbY + brbH / 2);
+                p.fill(255);
+                p.text(brbText, brbX + brbW / 2, brbY + brbH / 2);
+            }
+            
 
 
             // draw image with tint
@@ -163,43 +170,46 @@ export function startDVDSketch(elementId, imageUrl, width, height) {
                 p.tintB = p.random(255);
             }
 
-            // --- COLLISION WITH BRB TEXT BOX ---
-            let nextX = x + vx;
-            let nextY = y + vy;
+            if (TurnBrbOn) {
+                // --- COLLISION WITH BRB TEXT BOX ---
+                let nextX = x + vx;
+                let nextY = y + vy;
 
-            let dvdRight = nextX + imgW;
-            let dvdBottom = nextY + imgH;
+                let dvdRight = nextX + imgW;
+                let dvdBottom = nextY + imgH;
 
-            let brbRight = brbX + brbW;
-            let brbBottom = brbY + brbH;
+                let brbRight = brbX + brbW;
+                let brbBottom = brbY + brbH;
 
-            let hit = false;
+                let hit = false;
 
-            // AABB collision
-            if (dvdRight > brbX &&
-                nextX < brbRight &&
-                dvdBottom > brbY &&
-                nextY < brbBottom) {
+                // AABB collision
+                if (dvdRight > brbX &&
+                    nextX < brbRight &&
+                    dvdBottom > brbY &&
+                    nextY < brbBottom) {
 
-                // Determine whether to bounce horizontally or vertically
-                let overlapX = Math.min(dvdRight - brbX, brbRight - nextX);
-                let overlapY = Math.min(dvdBottom - brbY, brbBottom - nextY);
+                    // Determine whether to bounce horizontally or vertically
+                    let overlapX = Math.min(dvdRight - brbX, brbRight - nextX);
+                    let overlapY = Math.min(dvdBottom - brbY, brbBottom - nextY);
 
-                if (overlapX < overlapY) {
-                    vx *= -1; // horizontal bounce
-                } else {
-                    vy *= -1; // vertical bounce
+                    if (overlapX < overlapY) {
+                        vx *= -1; // horizontal bounce
+                    } else {
+                        vy *= -1; // vertical bounce
+                    }
+
+                    hit = true;
                 }
 
-                hit = true;
+                // If hit + not color cycle → random tint
+                if (hit && !p.colorCycle) {
+                    p.tintR = p.random(255);
+                    p.tintG = p.random(255);
+                    p.tintB = p.random(255);
+                }
             }
-
-            // If hit + not color cycle → random tint
-            if (hit && !p.colorCycle) {
-                p.tintR = p.random(255);
-                p.tintG = p.random(255);
-                p.tintB = p.random(255);
-            }
+           
         };
 
         p.windowResized = () => {
@@ -207,8 +217,10 @@ export function startDVDSketch(elementId, imageUrl, width, height) {
             const h = _containerElement.clientHeight;
             p.resizeCanvas(w, h);
 
-            brbX = (w - brbW) / 2;
-            brbY = (h - brbH) / 2;
+            if (TurnBrbOn) {
+                brbX = (w - brbW) / 2;
+                brbY = (h - brbH) / 2;
+            }
         };
     };
 
