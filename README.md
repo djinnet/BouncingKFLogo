@@ -11,6 +11,8 @@ This is meant to showcase how to run P5.js sketches in a Blazor WebAssembly appl
 - A web browser that supports WebAssembly (most modern browsers do).
 - Internet connection to load P5.js from CDN.
 
+Live Demo: https://djinnet.github.io/BouncingKFLogo/
+
 ## Getting Started
 1. Clone the repository:
    ```bash
