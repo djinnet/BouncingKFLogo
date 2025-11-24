@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+	<GHPages>true</GHPages>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +13,7 @@
     <PackageReference Include="Interoply" Version="0.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.11" PrivateAssets="all" />
+    <PackageReference Include="PublishSPAforGitHubPages.Build" Version="3.0.3" />
   </ItemGroup>
 
   <ItemGroup>
